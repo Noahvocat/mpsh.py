@@ -4,6 +4,7 @@ import os
 import subprocess
 import socket
 import sys
+import time
 
 class bcolors:
     header = '\033[95m'
@@ -16,6 +17,13 @@ class bcolors:
     bold = '\033[1m'
     underline = '\033[4m'
 
+if os.name == 'nt':
+     print("A UNIX/UNIX-Like system like GNU/Linux, BSD or OS X is recommended to use MPSH but not required.")
+     print("Command like ",bcolors.cyan,"su",bcolors.reset,"will not be available.")
+     sleep(1)
+     print("Proceeding with a MicrosoftNT system...")
+
+ver = "Alpha 2406-2"
 
 print(bcolors.header + "███╗   ███╗██████╗ ███████╗██╗  ██╗")
 print(bcolors.header + "████╗ ████║██╔══██╗██╔════╝██║  ██║")
@@ -26,11 +34,11 @@ print(bcolors.header + "╚═╝     ╚═╝╚═╝     ╚═════�
                                    
 
 print("")
-print("Welcome to Symbiosis MultiPurposeSHell.py")
+print("Welcome to MultiPurposeSHell.py")
 print("It is recommended to not set it as your default shell for now, most commands are not available yet.")
-print("Dev Release 0.1")
-print("Use the "+bcolors.cyan+"help "+bcolors.reset+"command to list all the commands.")
-print("")
+print(ver)
+print("Use the "+bcolors.cyan+"help "+bcolors.reset+"command to list all the MPSH.py builtin commands.")
+print("Running MPSH.py on a "+os.name+" system.")
 
 def execute_command(command):
     try:
@@ -77,25 +85,33 @@ def mpsh_cd(path):
     try:
         os.chdir(os.path.abspath(path))
     except Exception as e:
-        print(bcolors.fatal + "CD: No such file or directory: {}".format(path) + bcolors.reset)
+        print(bcolors.fatal + "ChangeDir: No such file or directory: {}".format(path) + bcolors.reset)
 
 def mpsh_help():
-    print("mpsh Help\nhelp: Shows this message\ncd: Changes directory\nexit: Exit mpsh\nmpshver: print MPSH version\nmpsh: open another MPSH session (useless command)\nsu: Switches the user")
+    print("MPSH.py Help\nhelp: Shows this message\ncd: Changes directory\nexit: Exit mpsh\nmpshver: print MPSH version\nsu: Switches the user\necho: Prints the user's input, usage: echo <input>\nbanana: *banana noise*")
 
 def getuser():
     return bcolors.ok + os.getlogin()+"@"+socket.gethostname()
 
 def mpsh_ver():
-    print("Symbiosis Multi Purpose SHell: Developer Release 0.1")
-
-def mpsh():
-    os.execv(sys.executable, ['python'] + sys.argv)
+    print("Multi Purpose SHell",ver)
 
 def mpsh_switchuser():
-    print("Switch User (su) has not been implemented in MPSH yet. Please use sudo <command>.")
+    print("su isn't available yet.")
+    print("But i mean you should have coreutils and it got su")
+# windows users taking an l until su is done
+
+def mpsh_echo(inp):
+    print((inp))
+# im not sure if the echo command works, but who cares it's in coreutils anyway
+
+def mpsh_banana():
+    print("I'm a banana!")
+    print("https://youtu.be/vFfmL6kLY5I?si=g791mDmoI6ApNiLK")
+
 def main():
     while True:
-        inp = input(getuser()+bcolors.reset+":"+os.getcwd()+"% ")
+        inp = input(getuser()+bcolors.reset+":"+os.getcwd()+"+ ")
         if inp == "exit":
             break
         elif inp[:3] == "cd ":
@@ -104,10 +120,12 @@ def main():
             mpsh_help()
         elif inp == "mpshver":
             mpsh_ver()
-        elif inp == "mpsh":
-            mpsh()
         elif inp == "su":
             mpsh_switchuser()
+        elif inp == "echo":
+            mpsh_echo()
+        elif inp == "banana":
+            mpsh_banana()
         else:
             execute_command(inp)
 
